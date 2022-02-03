@@ -22,16 +22,15 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"os/signal"
 	"path/filepath"
-	"syscall"
 	"time"
 
 	"github.com/google/renameio"
 	"github.com/jpillora/backoff"
 
-	"git.tcp.direct/kayos/rout5/internal/dhcp6"
 	"git.tcp.direct/kayos/rout5/notify"
+
+	"git.tcp.direct/kayos/rout5/internal/dhcp6"
 )
 
 func logic() error {
@@ -53,7 +52,7 @@ func logic() error {
 		return err
 	}
 	usr2 := make(chan os.Signal, 1)
-	signal.Notify(usr2, syscall.SIGUSR2)
+	ipc.Notify(usr2, ipc.SigUSR2)
 	boff := backoff.Backoff{
 		Factor: 2,
 		Jitter: true,
@@ -77,10 +76,10 @@ func logic() error {
 		if err := renameio.WriteFile(leasePath, b, 0644); err != nil {
 			return err
 		}
-		if err := notify.Process("/user/netconfigd", syscall.SIGUSR1); err != nil {
+		if err := notify.Process("/user/netconfigd", ipc.SigUSR1); err != nil {
 			log.Printf("notifying netconfig: %v", err)
 		}
-		if err := notify.Process("/user/radvd", syscall.SIGUSR1); err != nil {
+		if err := notify.Process("/user/radvd", ipc.SigUSR1); err != nil {
 			log.Printf("notifying radvd: %v", err)
 		}
 		select {

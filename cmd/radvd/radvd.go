@@ -22,8 +22,6 @@ import (
 	"log"
 	"net"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp6"
 	"git.tcp.direct/kayos/rout5/internal/radvd"
@@ -58,7 +56,7 @@ func logic() error {
 		log.Printf("cannot announce IPv6 prefixes: %v", err)
 	}
 	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGUSR1)
+	ipc.Notify(ch, ipc.SigUSR1)
 	go func() {
 		for range ch {
 			if err := readConfig(); err != nil {

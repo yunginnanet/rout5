@@ -3,10 +3,12 @@ module git.tcp.direct/kayos/rout5
 go 1.17
 
 require (
+	github.com/akutz/memconn v0.1.0
 	github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883
 	github.com/digineo/go-ping v1.0.1
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/gokrazy/gokrazy v0.0.0-20220130135252-8f5fccc68ca3
+	github.com/gokrazy/internal v0.0.0-20220111191949-698f19a074ef
 	github.com/google/go-cmp v0.5.7
 	github.com/google/gopacket v1.1.19
 	github.com/google/nftables v0.0.0-20220129182606-a46119e5928d
@@ -38,7 +40,6 @@ require (
 	github.com/digineo/go-logwrap v0.0.0-20181106161722-a178c58ea3f0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gofrs/flock v0.8.0 // indirect
-	github.com/gokrazy/internal v0.0.0-20220111191949-698f19a074ef // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/renameio/v2 v2.0.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect

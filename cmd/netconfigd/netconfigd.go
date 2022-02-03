@@ -21,19 +21,17 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"os/signal"
 	"sync"
-	"syscall"
 
-	"github.com/gokrazy/gokrazy"
 	"github.com/google/nftables"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"git.tcp.direct/kayos/rout5/internal/netconfig"
+	"git.tcp.direct/kayos/rout5/ipc"
 	"git.tcp.direct/kayos/rout5/multilisten"
-	"git.tcp.direct/kayos/rout5/notify"
+	"git.tcp.direct/kayos/rout5/networking"
 )
 
 func init() {
@@ -104,7 +102,7 @@ func init() {
 var httpListeners = multilisten.NewPool()
 
 func updateListeners() error {
-	hosts, err := gokrazy.PrivateInterfaceAddrs()
+	hosts, err := networking.PrivateInterfaceAddrs()
 	if err != nil {
 		return err
 	}
@@ -124,23 +122,21 @@ func logic() error {
 		return err
 	}
 	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGUSR1)
+	ipc.Notify(ch, ipc.SigUSR1)
 	for {
 		err := netconfig.Apply("/perm/", "/")
 
 		// Notify dhcp4d so that it can update its listeners for prometheus
 		// metrics on the external interface.
-		if err := notify.Process("/user/dhcp4d", syscall.SIGUSR1); err != nil {
+		if err := ipc.Process("/user/dhcp4d", ipc.SigUSR1); err != nil {
 			log.Printf("notifying dhcp4d: %v", err)
 		}
 
-		// Notify gokrazy about new addresses (netconfig.Apply might have
+		// Notify rout5 processes about new addresses (netconfig.Apply might have
 		// modified state before returning an error) so that listeners can be
 		// updated.
-		p, _ := os.FindProcess(1)
-		if err := p.Signal(syscall.SIGHUP); err != nil {
-			log.Printf("kill -HUP 1: %v", err)
-		}
+		ipc.NotifyAll(ipc.SigHUP)
+
 		if err != nil {
 			return err
 		}

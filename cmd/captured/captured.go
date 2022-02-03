@@ -23,16 +23,14 @@ import (
 	"fmt"
 	"log"
 	_ "net/http/pprof"
-	"os"
-	"os/signal"
 	"sync"
-	"syscall"
 
 	"github.com/gokrazy/gokrazy"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcapgo"
 
+	"git.tcp.direct/kayos/rout5/ipc"
 	"git.tcp.direct/kayos/rout5/multilisten"
 )
 
@@ -127,8 +125,8 @@ func logic() error {
 	}
 
 	go func() {
-		ch := make(chan os.Signal, 1)
-		signal.Notify(ch, syscall.SIGUSR1)
+		ch := make(chan ipc.Signal, 1)
+		ipc.Notify(ch, ipc.SigUSR1)
 		for range ch {
 			if err := updateListeners(srv); err != nil {
 				log.Printf("updateListeners: %v", err)

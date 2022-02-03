@@ -27,9 +27,7 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"os/signal"
 	"path/filepath"
-	"syscall"
 	"time"
 
 	"github.com/google/gopacket"
@@ -39,7 +37,7 @@ import (
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp4"
 	"git.tcp.direct/kayos/rout5/internal/netconfig"
-	"git.tcp.direct/kayos/rout5/notify"
+	"git.tcp.direct/kayos/rout5/ipc"
 )
 
 var (
@@ -125,7 +123,7 @@ func logic() error {
 		Ack:       ack,
 	}
 	usr2 := make(chan os.Signal, 1)
-	signal.Notify(usr2, syscall.SIGUSR2)
+	ipc.Notify(usr2, ipc.SigUSR2)
 	boff := backoff.Backoff{
 		Factor: 2,
 		Jitter: true,
@@ -160,7 +158,7 @@ ObtainOrRenew:
 		if err := renameio.WriteFile(ackFn, buf.Bytes(), 0644); err != nil {
 			return fmt.Errorf("persisting DHCPACK to %s: %v", ackFn, err)
 		}
-		if err := notify.Process("/user/netconfigd", syscall.SIGUSR1); err != nil {
+		if err := ipc.Process("/user/netconfigd", ipc.SigUSR1); err != nil {
 			log.Printf("notifying netconfig: %v", err)
 		}
 

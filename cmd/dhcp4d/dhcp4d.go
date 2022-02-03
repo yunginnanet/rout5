@@ -28,12 +28,10 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"sort"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
 	"unicode"
 
@@ -47,8 +45,9 @@ import (
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp4d"
 	"git.tcp.direct/kayos/rout5/internal/oui"
+	"git.tcp.direct/kayos/rout5/ipc"
 	"git.tcp.direct/kayos/rout5/multilisten"
-	"git.tcp.direct/kayos/rout5/notify"
+	"git.tcp.direct/kayos/rout5/networking"
 )
 
 var iface = flag.String("interface", "lan0", "ethernet interface to listen for DHCPv4 requests on")
@@ -241,7 +240,7 @@ func newSrv(permDir string) (*srv, error) {
 	}
 	go func() {
 		ch := make(chan os.Signal, 1)
-		signal.Notify(ch, syscall.SIGUSR1)
+		ipc.Notify(ch, ipc.SigUSR1)
 		for range ch {
 			if err := updateListeners(); err != nil {
 				log.Printf("updateListeners: %v", err)
@@ -328,7 +327,7 @@ func newSrv(permDir string) (*srv, error) {
 		if xff := r.Header.Get("X-Forwarded-For"); ip.IsLoopback() && xff != "" {
 			ip = net.ParseIP(xff)
 		}
-		if !gokrazy.IsInPrivateNet(ip) {
+		if !networking.IsInPrivateNet(ip) {
 			http.Error(w, fmt.Sprintf("access from %v forbidden", ip), http.StatusForbidden)
 			return
 		}
@@ -397,7 +396,7 @@ func newSrv(permDir string) (*srv, error) {
 			errs <- err
 		}
 		updateNonExpired(leases)
-		if err := notify.Process("/user/dnsd", syscall.SIGUSR1); err != nil {
+		if err := ipc.Process("/user/dnsd", ipc.SigUSR1); err != nil {
 			log.Printf("notifying dnsd: %v", err)
 		}
 

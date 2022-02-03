@@ -26,7 +26,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"syscall"
 
 	"github.com/google/nftables"
 	"github.com/google/nftables/binaryutil"
@@ -37,7 +36,7 @@ import (
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp4"
 	"git.tcp.direct/kayos/rout5/internal/dhcp6"
-	"git.tcp.direct/kayos/rout5/notify"
+	"git.tcp.direct/kayos/rout5/ipc"
 )
 
 func subnetMaskSize(mask string) (int, error) {
@@ -845,7 +844,7 @@ func Apply(dir, root string) error {
 		"backupd",  // listens on private IPv4/IPv6
 		"captured", // listens on private IPv4/IPv6
 	} {
-		if err := notify.Process("/user/"+process, syscall.SIGUSR1); err != nil {
+		if err := ipc.Process("/user/"+process, ipc.SigUSR1); err != nil {
 			log.Printf("notifying %s: %v", process, err)
 		}
 	}

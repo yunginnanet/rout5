@@ -26,10 +26,8 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
-	"os/signal"
 	"strings"
 	"sync"
-	"syscall"
 
 	"github.com/gokrazy/gokrazy"
 
@@ -130,7 +128,7 @@ func logic() error {
 		return err
 	}
 	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGUSR1)
+	ipc.Notify(ch, ipc.SigUSR1)
 	for range ch {
 		if err := updateListeners(); err != nil {
 			log.Printf("updateListeners: %v", err)
