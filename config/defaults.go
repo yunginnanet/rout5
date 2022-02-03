@@ -10,7 +10,7 @@ import (
 func setDefaults() {
 	var (
 		configSections = []string{"logger", "http", "interfaces"}
-		deflogdir      = "/var/log/" + Title
+		deflogdir      = "/var/logging/" + Title
 	)
 
 	const defNoColor = false

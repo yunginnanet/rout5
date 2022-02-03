@@ -4,7 +4,6 @@ package system
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"syscall"

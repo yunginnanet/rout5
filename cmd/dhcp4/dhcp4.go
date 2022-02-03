@@ -23,7 +23,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -34,11 +33,19 @@ import (
 	"github.com/google/gopacket/layers"
 	"github.com/google/renameio"
 	"github.com/jpillora/backoff"
+	"github.com/rs/zerolog"
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp4"
 	"git.tcp.direct/kayos/rout5/internal/netconfig"
 	"git.tcp.direct/kayos/rout5/ipc"
+	"git.tcp.direct/kayos/rout5/logging"
 )
+
+var log *zerolog.Logger
+
+func init() {
+	log = logging.GetLogger()
+}
 
 func healthy() error {
 	req, err := http.NewRequest("GET", "http://localhost:7733/health.json", nil)

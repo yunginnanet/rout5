@@ -28,7 +28,7 @@ import (
 	"github.com/google/renameio"
 	"github.com/jpillora/backoff"
 
-	"git.tcp.direct/kayos/rout5/notify"
+	"git.tcp.direct/kayos/rout5/ipc"
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp6"
 )

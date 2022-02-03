@@ -67,7 +67,7 @@ func readFrom(r *pcapgo.Reader, buf []byte) (int, net.IP, error) {
 		return 0, nil, fmt.Errorf("pcap contained unexpected non-UDP packet")
 	}
 
-	//log.Printf("ReadFrom(): %x, %v, pkt = %+v", udp.LayerPayload(), err, pkt)
+	// logging.Printf("ReadFrom(): %x, %v, pkt = %+v", udp.LayerPayload(), err, pkt)
 	copy(buf, udp.LayerPayload())
 	return len(udp.LayerPayload()), net.ParseIP("192.168.23.1"), err
 }
@@ -224,7 +224,7 @@ func (r *dhcp4conn) ReadFrom(buf []byte) (int, net.Addr, error) {
 		return 0, nil, fmt.Errorf("pcap contained unexpected non-IPv4 packet")
 	}
 
-	//log.Printf("ReadFrom(): %x, %v, pkt = %+v", udp.LayerPayload(), err, pkt)
+	// logging.Printf("ReadFrom(): %x, %v, pkt = %+v", udp.LayerPayload(), err, pkt)
 	copy(buf, eth.LayerPayload())
 	ip := net.ParseIP("192.168.23.1")
 	return len(eth.LayerPayload()), &net.IPAddr{IP: ip}, nil
