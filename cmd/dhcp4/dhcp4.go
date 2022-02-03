@@ -40,11 +40,6 @@ import (
 	"git.tcp.direct/kayos/rout5/ipc"
 )
 
-var (
-	netInterface = flag.String("interface", "uplink0", "network interface to operate on")
-	stateDir     = flag.String("state_dir", "/perm/dhcp4", "directory in which to store lease data (wire/lease.json) and last ACK (wire/ack)")
-)
-
 func healthy() error {
 	req, err := http.NewRequest("GET", "http://localhost:7733/health.json", nil)
 	if err != nil {
@@ -85,11 +80,8 @@ func healthy() error {
 }
 
 func logic() error {
-	leasePath := filepath.Join(*stateDir, "wire/lease.json")
-	if err := os.MkdirAll(filepath.Dir(leasePath), 0755); err != nil {
-		return err
-	}
-	iface, err := net.InterfaceByName(*netInterface)
+
+	iface, err := net.InterfaceByName()
 	if err != nil {
 		return err
 	}
