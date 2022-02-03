@@ -22,19 +22,18 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
-
-	"git.tcp.direct/kayos/rout5/internal/multilisten"
 
 	"github.com/gokrazy/gokrazy"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcapgo"
 
-	_ "net/http/pprof"
+	"git.tcp.direct/kayos/rout5/multilisten"
 )
 
 var (

@@ -39,7 +39,7 @@ import (
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp4"
 	"git.tcp.direct/kayos/rout5/internal/netconfig"
-	"git.tcp.direct/kayos/rout5/internal/notify"
+	"git.tcp.direct/kayos/rout5/notify"
 )
 
 var (

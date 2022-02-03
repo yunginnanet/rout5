@@ -31,13 +31,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"git.tcp.direct/kayos/rout5/internal/multilisten"
 	"git.tcp.direct/kayos/rout5/internal/netconfig"
-	"git.tcp.direct/kayos/rout5/internal/notify"
-)
-
-var (
-	linger = flag.Bool("linger", true, "linger around after applying the configuration (until killed)")
+	"git.tcp.direct/kayos/rout5/multilisten"
+	"git.tcp.direct/kayos/rout5/notify"
 )
 
 func init() {
@@ -123,11 +119,9 @@ func updateListeners() error {
 }
 
 func logic() error {
-	if *linger {
-		http.Handle("/metrics", promhttp.Handler())
-		if err := updateListeners(); err != nil {
-			return err
-		}
+	http.Handle("/metrics", promhttp.Handler())
+	if err := updateListeners(); err != nil {
+		return err
 	}
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGUSR1)
@@ -149,9 +143,6 @@ func logic() error {
 		}
 		if err != nil {
 			return err
-		}
-		if !*linger {
-			break
 		}
 		<-ch
 		if err := updateListeners(); err != nil {

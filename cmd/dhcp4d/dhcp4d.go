@@ -46,9 +46,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp4d"
-	"git.tcp.direct/kayos/rout5/internal/multilisten"
-	"git.tcp.direct/kayos/rout5/internal/notify"
 	"git.tcp.direct/kayos/rout5/internal/oui"
+	"git.tcp.direct/kayos/rout5/multilisten"
+	"git.tcp.direct/kayos/rout5/notify"
 )
 
 var iface = flag.String("interface", "lan0", "ethernet interface to listen for DHCPv4 requests on")

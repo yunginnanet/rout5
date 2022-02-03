@@ -24,6 +24,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"strings"
@@ -33,9 +34,7 @@ import (
 	"github.com/gokrazy/gokrazy"
 
 	"git.tcp.direct/kayos/rout5/internal/diag"
-	"git.tcp.direct/kayos/rout5/internal/multilisten"
-
-	_ "net/http/pprof"
+	"git.tcp.direct/kayos/rout5/multilisten"
 )
 
 var httpListeners = multilisten.NewPool()

@@ -37,7 +37,7 @@ import (
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp4"
 	"git.tcp.direct/kayos/rout5/internal/dhcp6"
-	"git.tcp.direct/kayos/rout5/internal/notify"
+	"git.tcp.direct/kayos/rout5/notify"
 )
 
 func subnetMaskSize(mask string) (int, error) {

@@ -31,7 +31,7 @@ import (
 	"github.com/jpillora/backoff"
 
 	"git.tcp.direct/kayos/rout5/internal/dhcp6"
-	"git.tcp.direct/kayos/rout5/internal/notify"
+	"git.tcp.direct/kayos/rout5/notify"
 )
 
 func logic() error {
