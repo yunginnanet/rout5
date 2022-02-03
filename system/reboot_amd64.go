@@ -1,4 +1,6 @@
-package gokrazy
+package system
+
+// stolen from https://github.com/gokrazy
 
 import (
 	"io/ioutil"

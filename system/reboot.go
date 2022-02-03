@@ -3,6 +3,8 @@
 
 package system
 
+// stolen from https://github.com/gokrazy
+
 import "golang.org/x/sys/unix"
 
 func reboot() error {
