@@ -17,7 +17,7 @@ package diag_test
 import (
 	"testing"
 
-	"github.com/rtr7/router7/internal/diag"
+	"git.tcp.direct/kayos/rout5/internal/diag"
 
 	"github.com/google/go-cmp/cmp"
 )

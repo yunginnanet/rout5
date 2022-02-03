@@ -17,6 +17,7 @@ package main
 
 import (
 	"flag"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -30,13 +31,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/rtr7/router7/internal/multilisten"
-	"github.com/rtr7/router7/internal/netconfig"
-	"github.com/rtr7/router7/internal/notify"
-	"github.com/rtr7/router7/internal/teelogger"
+	"git.tcp.direct/kayos/rout5/internal/multilisten"
+	"git.tcp.direct/kayos/rout5/internal/netconfig"
+	"git.tcp.direct/kayos/rout5/internal/notify"
 )
-
-var log = teelogger.NewConsole()
 
 var (
 	linger = flag.Bool("linger", true, "linger around after applying the configuration (until killed)")

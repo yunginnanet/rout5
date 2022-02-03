@@ -1,6 +1,6 @@
 SUDO=GOPATH=$(shell go env GOPATH) sudo --preserve-env=GOPATH
 
-PKGS := github.com/rtr7/router7/cmd/... \
+PKGS := git.tcp.direct/kayos/rout5/cmd/... \
 	github.com/gokrazy/breakglass \
 	github.com/gokrazy/timestamps \
 	github.com/stapelberg/zkj-nas-tools/wolgw \
@@ -45,29 +45,29 @@ recover: #test
 test:
 	# simulate recover (quick, for early for feedback)
 	go build ${PKGS} github.com/rtr7/tools/cmd/...
-	go test -count=1 -v -race github.com/rtr7/router7/internal/...
+	go test -count=1 -v -race git.tcp.direct/kayos/rout5/internal/...
 	# integration tests
-	${SUDO} $(shell go env GOROOT)/bin/go test -count=1 -v -race github.com/rtr7/router7/...
+	${SUDO} $(shell go env GOROOT)/bin/go test -count=1 -v -race git.tcp.direct/kayos/rout5/...
 
 testdhcp:
-	go test -v -coverprofile=/tmp/cov github.com/rtr7/router7/internal/dhcp4d
+	go test -v -coverprofile=/tmp/cov git.tcp.direct/kayos/rout5/internal/dhcp4d
 #&& go tool cover -html=/tmp/cov
 
 strace:
 	# simulate recover (quick, for early for feedback)
 	go build ${PKGS} github.com/rtr7/tools/cmd/...
-	go test -v -race github.com/rtr7/router7/internal/...
+	go test -v -race git.tcp.direct/kayos/rout5/internal/...
 	# integration tests
 	(cd /tmp && go test -c router7) && ${SUDO} strace -f -o /tmp/st -s 2048 /tmp/router7.test -test.v #-test.race
 
 update:
-	rtr7-safe-update -build_command='make -C ~/go/src/github.com/rtr7/router7 image DIR=$$GOKR_DIR'
+	rtr7-safe-update -build_command='make -C ~/go/src/git.tcp.direct/kayos/rout5 image DIR=$$GOKR_DIR'
 
 # sudo ip link add link enp0s31f6 name macvtap0 type macvtap
 # sudo ip link set macvtap0 address 52:55:00:d1:55:03 up
 #
-# TODO: use veth pairs for router7’s lan0?
-# e.g. get a network namespace to talk through router7
+# TODO: use veth pairs for rout5’s lan0?
+# e.g. get a network namespace to talk through rout5
 # ip link add dev veth1 type veth peer name veth2
 qemu:
 	GOARCH=amd64 gokr-packer \

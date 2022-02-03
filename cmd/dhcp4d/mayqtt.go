@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"strings"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"

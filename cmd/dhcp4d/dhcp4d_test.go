@@ -28,8 +28,10 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/rtr7/router7/internal/dhcp4d"
+
 	"golang.org/x/sync/errgroup"
+
+	"git.tcp.direct/kayos/rout5/internal/dhcp4d"
 )
 
 const interfacesJson = `

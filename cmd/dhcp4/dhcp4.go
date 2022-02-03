@@ -23,6 +23,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -35,13 +36,11 @@ import (
 	"github.com/google/gopacket/layers"
 	"github.com/google/renameio"
 	"github.com/jpillora/backoff"
-	"github.com/rtr7/router7/internal/dhcp4"
-	"github.com/rtr7/router7/internal/netconfig"
-	"github.com/rtr7/router7/internal/notify"
-	"github.com/rtr7/router7/internal/teelogger"
-)
 
-var log = teelogger.NewConsole()
+	"git.tcp.direct/kayos/rout5/internal/dhcp4"
+	"git.tcp.direct/kayos/rout5/internal/netconfig"
+	"git.tcp.direct/kayos/rout5/internal/notify"
+)
 
 var (
 	netInterface = flag.String("interface", "uplink0", "network interface to operate on")
@@ -127,7 +126,7 @@ func logic() error {
 	}
 	usr2 := make(chan os.Signal, 1)
 	signal.Notify(usr2, syscall.SIGUSR2)
-	backoff := backoff.Backoff{
+	boff := backoff.Backoff{
 		Factor: 2,
 		Jitter: true,
 		Min:    10 * time.Second,
@@ -136,12 +135,12 @@ func logic() error {
 ObtainOrRenew:
 	for c.ObtainOrRenew() {
 		if err := c.Err(); err != nil {
-			dur := backoff.Duration()
+			dur := boff.Duration()
 			log.Printf("Temporary error: %v (waiting %v)", err, dur)
 			time.Sleep(dur)
 			continue
 		}
-		backoff.Reset()
+		boff.Reset()
 		log.Printf("lease: %+v", c.Config())
 		b, err := json.Marshal(c.Config())
 		if err != nil {

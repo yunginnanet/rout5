@@ -25,8 +25,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/rtr7/router7/internal/dhcp6"
-	"github.com/rtr7/router7/internal/radvd"
+	"git.tcp.direct/kayos/rout5/internal/dhcp6"
+	"git.tcp.direct/kayos/rout5/internal/radvd"
 )
 
 func logic() error {

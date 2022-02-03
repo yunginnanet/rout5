@@ -36,14 +36,14 @@
       <a class="nav-item nav-link " href="/installation/">Installation </a>
       
       
-      <a class="nav-item nav-link " href="https://github.com/rtr7/router7">GitHub </a>
+      <a class="nav-item nav-link " href="https://git.tcp.direct/kayos/rout5">GitHub </a>
       
     </div>
   </div>
 </nav>
 <h1 id="architecture">Architecture</h1>
 <p>router7 is based on <a href="https://gokrazy.org/">gokrazy</a>: it is an appliance which gets packed into a hard disk image, containing a FAT partition with the kernel, a read-only SquashFS partition for the root file system and an ext4 partition for permanent data.</p>
-<p>The individual services can be found in <a href="https://pkg.go.dev/github.com/rtr7/router7/cmd">github.com/rtr7/router7/cmd</a></p>
+<p>The individual services can be found in <a href="https://pkg.go.dev/git.tcp.direct/kayos/rout5/cmd">git.tcp.direct/kayos/rout5/cmd</a></p>
 <ul>
 <li>Each service runs in a separate process.</li>
 <li>Services communicate with each other by persisting state files. E.g., <code>cmd/dhcp4</code> writes <code>/perm/dhcp4/wire/lease.json</code>.</li>
@@ -182,10 +182,10 @@
 
 
 <p>Here’s an example of <code>cmd/diagd</code> output:</p>
-<p><img src="https://github.com/rtr7/router7/raw/master/2018-07-14-diagd.png"
+<p><img src="https://git.tcp.direct/kayos/rout5/raw/master/2018-07-14-diagd.png"
 width="800" alt="diagd output"></p>
 <p>Here’s an example of <code>cmd/netconfigd</code> metrics when scraped with <a href="https://prometheus.io/">Prometheus</a> and displayed in <a href="https://grafana.com/">Grafana</a>:</p>
-<p><img src="https://github.com/rtr7/router7/raw/master/2018-07-14-grafana.png"
+<p><img src="https://git.tcp.direct/kayos/rout5/raw/master/2018-07-14-grafana.png"
 width="800" alt="metrics in grafana"></p>
 
 

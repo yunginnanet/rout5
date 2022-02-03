@@ -36,7 +36,7 @@
       <a class="nav-item nav-link active" href="/installation/">Installation <span class="sr-only">(current)</span></a>
       
       
-      <a class="nav-item nav-link " href="https://github.com/rtr7/router7">GitHub </a>
+      <a class="nav-item nav-link " href="https://git.tcp.direct/kayos/rout5">GitHub </a>
       
     </div>
   </div>
@@ -52,11 +52,11 @@
 <li>Press <code>s</code> to save configuration and exit</li>
 </ul>
 <p>Connect a network cable on <code>net0</code>, the port closest to the serial console port:</p>
-<p><img src="https://github.com/rtr7/router7/raw/master/devsetup.jpg"
+<p><img src="https://git.tcp.direct/kayos/rout5/raw/master/devsetup.jpg"
 width="800" alt="router7 development setup"></p>
 <p>Next, build a router7 image:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">go get -u github.com/gokrazy/tools/cmd/gokr-packer github.com/rtr7/tools/cmd/...
-go get -u -d github.com/rtr7/router7
+go get -u -d git.tcp.direct/kayos/rout5
 mkdir /tmp/recovery
 GOARCH<span style="color:#f92672">=</span>amd64 gokr-packer <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>	-hostname<span style="color:#f92672">=</span>router7 <span style="color:#ae81ff">\
@@ -68,7 +68,7 @@ GOARCH<span style="color:#f92672">=</span>amd64 gokr-packer <span style="color:#
 </span><span style="color:#ae81ff"></span>	-firmware_package<span style="color:#f92672">=</span>github.com/rtr7/kernel <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>	-gokrazy_pkgs<span style="color:#f92672">=</span>github.com/gokrazy/gokrazy/cmd/ntp <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>	-serial_console<span style="color:#f92672">=</span>ttyS0,115200n8 <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>	github.com/rtr7/router7/cmd/...
+</span><span style="color:#ae81ff"></span>	git.tcp.direct/kayos/rout5/cmd/...
 </code></pre></div><p>Run <code>rtr7-recover -boot=/tmp/recovery/boot.img -mbr=/tmp/recovery/mbr.img -root=/tmp/recovery/root.img</code> to:</p>
 <ul>
 <li>trigger a reset <a href="#rebootor">if a Teensy with the rebootor firmware is attached</a></li>
@@ -101,7 +101,7 @@ GOARCH<span style="color:#f92672">=</span>amd64 gokr-packer <span style="color:#
         }
     ]
 }
-</code></pre></div><p>Schema: see <a href="https://github.com/rtr7/router7/blob/f86e20be5305fc0e7e77421e0f2abde98a84f2a7/internal/netconfig/netconfig.go#L183"><code>InterfaceConfig</code></a></p>
+</code></pre></div><p>Schema: see <a href="https://git.tcp.direct/kayos/rout5/blob/f86e20be5305fc0e7e77421e0f2abde98a84f2a7/internal/netconfig/netconfig.go#L183"><code>InterfaceConfig</code></a></p>
 <h3 id="port-forwarding">Port Forwarding</h3>
 <p>The <code>/perm/portforwardings.json</code> configuration file can be created to define port forwarding rules.</p>
 <p>Example:</p>
@@ -121,8 +121,8 @@ GOARCH<span style="color:#f92672">=</span>amd64 gokr-packer <span style="color:#
         }
     ]
 }
-</code></pre></div><p>Schema: see <a href="https://github.com/rtr7/router7/blob/f86e20be5305fc0e7e77421e0f2abde98a84f2a7/internal/netconfig/netconfig.go#L431"><code>portForwardings</code></a></p>
-<p>Please be aware that Hairpinning is currently not supported (see issue <a href="https://github.com/rtr7/router7/issues/53%5D">#53 Support for Hairpinning</a>)</p>
+</code></pre></div><p>Schema: see <a href="https://git.tcp.direct/kayos/rout5/blob/f86e20be5305fc0e7e77421e0f2abde98a84f2a7/internal/netconfig/netconfig.go#L431"><code>portForwardings</code></a></p>
+<p>Please be aware that Hairpinning is currently not supported (see issue <a href="https://git.tcp.direct/kayos/rout5/issues/53%5D">#53 Support for Hairpinning</a>)</p>
 <h2 id="updates">Updates</h2>
 <p>Run e.g. <code>rtr7-safe-update -updates_dir=$HOME/router7/updates</code> to:</p>
 <ul>
@@ -148,7 +148,7 @@ GOARCH<span style="color:#f92672">=</span>amd64 gokr-packer <span style="color:#
 </ul>
 <p>You can find a working rebootor firmware .hex file at <a href="https://github.com/PaulStoffregen/teensy_loader_cli/issues/38">https://github.com/PaulStoffregen/teensy_loader_cli/issues/38</a></p>
 <h2 id="prometheus">Prometheus</h2>
-<p>See <a href="https://github.com/rtr7/router7/tree/master/contrib/prometheus">https://github.com/rtr7/router7/tree/master/contrib/prometheus</a> for example
+<p>See <a href="https://git.tcp.direct/kayos/rout5/tree/master/contrib/prometheus">https://git.tcp.direct/kayos/rout5/tree/master/contrib/prometheus</a> for example
 configuration files, and install the <a href="https://grafana.com/dashboards/8288">router7 Grafana
 Dashboard</a>.</p>
 

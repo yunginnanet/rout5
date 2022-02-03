@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -28,12 +29,10 @@ import (
 
 	"github.com/google/renameio"
 	"github.com/jpillora/backoff"
-	"github.com/rtr7/router7/internal/dhcp6"
-	"github.com/rtr7/router7/internal/notify"
-	"github.com/rtr7/router7/internal/teelogger"
-)
 
-var log = teelogger.NewConsole()
+	"git.tcp.direct/kayos/rout5/internal/dhcp6"
+	"git.tcp.direct/kayos/rout5/internal/notify"
+)
 
 func logic() error {
 	const leasePath = "/perm/dhcp6/wire/lease.json"
@@ -55,7 +54,7 @@ func logic() error {
 	}
 	usr2 := make(chan os.Signal, 1)
 	signal.Notify(usr2, syscall.SIGUSR2)
-	backoff := backoff.Backoff{
+	boff := backoff.Backoff{
 		Factor: 2,
 		Jitter: true,
 		Min:    10 * time.Second,
@@ -64,12 +63,12 @@ func logic() error {
 
 	for c.ObtainOrRenew() {
 		if err := c.Err(); err != nil {
-			dur := backoff.Duration()
+			dur := boff.Duration()
 			log.Printf("Temporary error: %v (waiting %v)", err, dur)
 			time.Sleep(dur)
 			continue
 		}
-		backoff.Reset()
+		boff.Reset()
 		log.Printf("lease: %+v", c.Config())
 		b, err := json.Marshal(c.Config())
 		if err != nil {

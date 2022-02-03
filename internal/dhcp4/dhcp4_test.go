@@ -22,7 +22,7 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/rtr7/router7/internal/testing/pcapreplayer"
+	"git.tcp.direct/kayos/rout5/internal/testing/pcapreplayer"
 )
 
 func TestDHCP4(t *testing.T) {

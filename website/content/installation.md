@@ -19,17 +19,17 @@ Connect your serial adapter ([usbcom1a](https://pcengines.ch/usbcom1a.htm) works
 
 Connect a network cable on `net0`, the port closest to the serial console port:
 
-<img src="https://github.com/rtr7/router7/raw/master/devsetup.jpg"
+<img src="https://git.tcp.direct/kayos/rout5/raw/master/devsetup.jpg"
 width="800" alt="router7 development setup">
 
 Next, build a router7 image:
 
 ```shell
 go get -u github.com/gokrazy/tools/cmd/gokr-packer github.com/rtr7/tools/cmd/...
-go get -u -d github.com/rtr7/router7
+go get -u -d github.com/rtr7/rout5
 mkdir /tmp/recovery
 GOARCH=amd64 gokr-packer \
-	-hostname=router7 \
+	-hostname=rout5 \
 	-overwrite_boot=/tmp/recovery/boot.img \
 	-overwrite_mbr=/tmp/recovery/mbr.img \
 	-overwrite_root=/tmp/recovery/root.img \
@@ -38,7 +38,7 @@ GOARCH=amd64 gokr-packer \
 	-firmware_package=github.com/rtr7/kernel \
 	-gokrazy_pkgs=github.com/gokrazy/gokrazy/cmd/ntp \
 	-serial_console=ttyS0,115200n8 \
-	github.com/rtr7/router7/cmd/...
+	github.com/rtr7/rout5/cmd/...
 ```
 
 Run `rtr7-recover -boot=/tmp/recovery/boot.img -mbr=/tmp/recovery/mbr.img -root=/tmp/recovery/root.img` to:
@@ -77,7 +77,7 @@ Example:
 }
 ```
 
-Schema: see [`InterfaceConfig`](https://github.com/rtr7/router7/blob/f86e20be5305fc0e7e77421e0f2abde98a84f2a7/internal/netconfig/netconfig.go#L183)
+Schema: see [`InterfaceConfig`](https://git.tcp.direct/kayos/rout5/blob/f86e20be5305fc0e7e77421e0f2abde98a84f2a7/internal/netconfig/netconfig.go#L183)
 
 ### Port Forwarding
 
@@ -105,9 +105,9 @@ Example:
 ```
 
 Schema: see [`portForwardings`](
-https://github.com/rtr7/router7/blob/f86e20be5305fc0e7e77421e0f2abde98a84f2a7/internal/netconfig/netconfig.go#L431)
+https://git.tcp.direct/kayos/rout5/blob/f86e20be5305fc0e7e77421e0f2abde98a84f2a7/internal/netconfig/netconfig.go#L431)
 
-Please be aware that Hairpinning is currently not supported (see issue [#53 Support for Hairpinning](https://github.com/rtr7/router7/issues/53]))
+Please be aware that Hairpinning is currently not supported (see issue [#53 Support for Hairpinning](https://git.tcp.direct/kayos/rout5/issues/53]))
 
 ## Updates
 
@@ -129,7 +129,7 @@ To manually roll back to an older image, invoke `rtr7-safe-update` via the
 `recover.bash` script in the image directory underneath `-updates_dir`, e.g.:
 
 ```shell
-% cd ~/router7/updates/2018-07-03T17:33:52+02:00
+% cd ~/rout5/updates/2018-07-03T17:33:52+02:00
 % ./recover.bash
 ```
 
@@ -145,6 +145,6 @@ You can find a working rebootor firmware .hex file at https://github.com/PaulSto
 
 ## Prometheus
 
-See https://github.com/rtr7/router7/tree/master/contrib/prometheus for example
+See https://git.tcp.direct/kayos/rout5/tree/master/contrib/prometheus for example
 configuration files, and install the [router7 Grafana
 Dashboard](https://grafana.com/dashboards/8288).

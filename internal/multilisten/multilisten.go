@@ -23,7 +23,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/rtr7/router7/internal/dhcp6"
+	"git.tcp.direct/kayos/rout5/internal/dhcp6"
 )
 
 type Listener interface {
@@ -74,7 +74,7 @@ func (p *Pool) ListenAndServe(hosts []string, listenerFor func(host string) List
 	}
 }
 
-// IPv6Net1 returns the IP address which router7 picks from the IPv6 prefix for
+// IPv6Net1 returns the IP address which rout5 picks from the IPv6 prefix for
 // itself, e.g. address 2a02:168:4a00::1 for prefix 2a02:168:4a00::/48.
 func IPv6Net1(dir string) (string, error) {
 	b, err := ioutil.ReadFile(filepath.Join(dir, "dhcp6/wire/lease.json"))

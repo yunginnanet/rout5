@@ -26,8 +26,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/rtr7/router7/internal/netconfig"
 	"github.com/vishvananda/netlink"
+
+	"git.tcp.direct/kayos/rout5/internal/netconfig"
 
 	"github.com/andreyvit/diff"
 	"github.com/google/go-cmp/cmp"
@@ -233,7 +234,7 @@ var wireGuardAvailable = func() bool {
 
 func TestNetconfig(t *testing.T) {
 	if os.Getenv("HELPER_PROCESS") == "1" {
-		tmp, err := ioutil.TempDir("", "router7")
+		tmp, err := ioutil.TempDir("", "rout5")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -361,8 +362,8 @@ func TestNetconfig(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		if diff := cmp.Diff(wantRoutes, routes); diff != "" {
-			t.Fatalf("routes: diff (-want +got):\n%s", diff)
+		if d := cmp.Diff(wantRoutes, routes); d != "" {
+			t.Fatalf("routes: diff (-want +got):\n%s", d)
 		}
 	})
 
@@ -430,8 +431,8 @@ peer: AVU3LodtnFaFnJmMyNNW7cUk4462lqnVULTFkjWYvRo=
 		}
 
 		got := strings.Join(rules, "\n")
-		if diff := cmp.Diff(goldenNftablesRules(false), got, opts...); diff != "" {
-			t.Fatalf("unexpected nftables rules: diff (-want +got):\n%s", diff)
+		if d := cmp.Diff(goldenNftablesRules(false), got, opts...); d != "" {
+			t.Fatalf("unexpected nftables rules: diff (-want +got):\n%s", d)
 		}
 	})
 
@@ -482,7 +483,7 @@ const goldenInterfacesBridges = `
 
 func TestNetconfigBridges(t *testing.T) {
 	if os.Getenv("HELPER_PROCESS") == "1" {
-		tmp, err := ioutil.TempDir("", "router7")
+		tmp, err := ioutil.TempDir("", "rout5")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -599,7 +600,7 @@ func ipLines(args ...string) ([]string, error) {
 
 func TestDHCPv4OldAddressDeconfigured(t *testing.T) {
 	if os.Getenv("HELPER_PROCESS") == "1" {
-		tmp, err := ioutil.TempDir("", "router7")
+		tmp, err := ioutil.TempDir("", "rout5")
 		if err != nil {
 			t.Fatal(err)
 		}

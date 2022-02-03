@@ -22,7 +22,7 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/rtr7/router7/internal/radvd"
+	"git.tcp.direct/kayos/rout5/internal/radvd"
 
 	"github.com/google/go-cmp/cmp"
 )
@@ -61,7 +61,7 @@ func TestRouterAdvertisement(t *testing.T) {
 		}
 	}
 
-	ready, err := ioutil.TempFile("", "router7")
+	ready, err := ioutil.TempFile("", "rout5")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -84,7 +84,7 @@ func TestRouterAdvertisement(t *testing.T) {
 			panic(fmt.Sprintf("failed to serve router advertisements: %v", err))
 		}
 	}()
-	//time.Sleep(5 * time.Second)
+	// time.Sleep(5 * time.Second)
 	rdisc6 := exec.Command("ip", "netns", "exec", ns, "rdisc6",
 		"--single",     // exit after first router advertisement
 		"--retry", "1", // retry only once

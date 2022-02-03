@@ -32,8 +32,8 @@ import (
 
 	"github.com/gokrazy/gokrazy"
 
-	"github.com/rtr7/router7/internal/diag"
-	"github.com/rtr7/router7/internal/multilisten"
+	"git.tcp.direct/kayos/rout5/internal/diag"
+	"git.tcp.direct/kayos/rout5/internal/multilisten"
 
 	_ "net/http/pprof"
 )

@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net"
 	"os"
 	"path/filepath"
@@ -34,13 +35,10 @@ import (
 	"github.com/vishvananda/netlink"
 	"golang.org/x/sys/unix"
 
-	"github.com/rtr7/router7/internal/dhcp4"
-	"github.com/rtr7/router7/internal/dhcp6"
-	"github.com/rtr7/router7/internal/notify"
-	"github.com/rtr7/router7/internal/teelogger"
+	"git.tcp.direct/kayos/rout5/internal/dhcp4"
+	"git.tcp.direct/kayos/rout5/internal/dhcp6"
+	"git.tcp.direct/kayos/rout5/internal/notify"
 )
-
-var log = teelogger.NewConsole()
 
 func subnetMaskSize(mask string) (int, error) {
 	parts := strings.Split(mask, ".")
@@ -786,7 +784,7 @@ func applyFirewall(dir, ifname string) error {
 
 func uplinkInterface() (string, error) {
 	names := []string{
-		"uplink0", // router7
+		"uplink0", // rout5
 		"eth0",    // gokrazy
 		"ens3",    // distri
 	}

@@ -15,5 +15,5 @@ unsafe = true
   [[menu.main]]
     name = "github"
     title = "GitHub"
-    url = "https://github.com/rtr7/router7"
+    url = "https://git.tcp.direct/kayos/rout5"
     weight = 60

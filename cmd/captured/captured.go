@@ -27,7 +27,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/rtr7/router7/internal/multilisten"
+	"git.tcp.direct/kayos/rout5/internal/multilisten"
 
 	"github.com/gokrazy/gokrazy"
 	"github.com/google/gopacket"

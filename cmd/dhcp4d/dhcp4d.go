@@ -24,6 +24,7 @@ import (
 	"html/template"
 	"io"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -44,16 +45,13 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/rtr7/router7/internal/dhcp4d"
-	"github.com/rtr7/router7/internal/multilisten"
-	"github.com/rtr7/router7/internal/notify"
-	"github.com/rtr7/router7/internal/oui"
-	"github.com/rtr7/router7/internal/teelogger"
+	"git.tcp.direct/kayos/rout5/internal/dhcp4d"
+	"git.tcp.direct/kayos/rout5/internal/multilisten"
+	"git.tcp.direct/kayos/rout5/internal/notify"
+	"git.tcp.direct/kayos/rout5/internal/oui"
 )
 
 var iface = flag.String("interface", "lan0", "ethernet interface to listen for DHCPv4 requests on")
-
-var log = teelogger.NewConsole()
 
 var nonExpiredLeases = promauto.NewGauge(prometheus.GaugeOpts{
 	Name: "non_expired_leases",
@@ -434,7 +432,7 @@ func newSrv(permDir string) (*srv, error) {
 		}
 		select {
 		case mayqtt <- PublishRequest{
-			Topic:    "router7/dhcp4d/lease/" + identifier,
+			Topic:    "rout5/dhcp4d/lease/" + identifier,
 			Retained: true,
 			Payload:  leaseJSON,
 		}:
@@ -444,12 +442,12 @@ func newSrv(permDir string) (*srv, error) {
 			// MQTT broker and DHCP server, and avoiding deadlocks.
 		}
 	}
-	conn, err := conn.NewUDP4BoundListener(*iface, ":67")
+	c, err := conn.NewUDP4BoundListener(*iface, ":67")
 	if err != nil {
 		return nil, err
 	}
 	go func() {
-		errs <- dhcp4.Serve(conn, handler)
+		errs <- dhcp4.Serve(c, handler)
 	}()
 	return &srv{
 		errs,

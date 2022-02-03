@@ -47,7 +47,7 @@ func (d *ping4gw) Children() []Node {
 }
 
 func defaultIPv4Gateway() (string, error) {
-	rl, err := netlink.RouteGet(net.ParseIP("8.8.8.8"))
+	rl, err := netlink.RouteGet(net.ParseIP("9.9.9.9"))
 	if err != nil {
 		return "", err
 	}

@@ -10,7 +10,7 @@ menu:
 
 router7 is based on [gokrazy](https://gokrazy.org/): it is an appliance which gets packed into a hard disk image, containing a FAT partition with the kernel, a read-only SquashFS partition for the root file system and an ext4 partition for permanent data.
 
-The individual services can be found in [github.com/rtr7/router7/cmd](https://pkg.go.dev/github.com/rtr7/router7/cmd)
+The individual services can be found in [git.tcp.direct/kayos/rout5/cmd](https://pkg.go.dev/git.tcp.direct/kayos/rout5/cmd)
 
 * Each service runs in a separate process.
 * Services communicate with each other by persisting state files. E.g., `cmd/dhcp4` writes `/perm/dhcp4/wire/lease.json`.
@@ -55,10 +55,10 @@ The individual services can be found in [github.com/rtr7/router7/cmd](https://pk
 
 Here’s an example of `cmd/diagd` output:
 
-<img src="https://github.com/rtr7/router7/raw/master/2018-07-14-diagd.png"
+<img src="https://git.tcp.direct/kayos/rout5/raw/master/2018-07-14-diagd.png"
 width="800" alt="diagd output">
 
 Here’s an example of `cmd/netconfigd` metrics when scraped with [Prometheus](https://prometheus.io/) and displayed in [Grafana](https://grafana.com/):
 
-<img src="https://github.com/rtr7/router7/raw/master/2018-07-14-grafana.png"
+<img src="https://git.tcp.direct/kayos/rout5/raw/master/2018-07-14-grafana.png"
 width="800" alt="metrics in grafana">

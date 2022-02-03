@@ -1,6 +1,7 @@
 {{ $htmlTable := .Inner | markdownify }}
 {{ $class := .Get 0 }}
-{{ $old := "<table>" }}
+{{ $old := "<!--suppress ALL -->
+<table>" }}
 {{ $new := printf "<table class=\"%s\">" $class }}
 {{ $htmlTable := replace $htmlTable $old $new }}
 {{ $htmlTable | safeHTML }}
