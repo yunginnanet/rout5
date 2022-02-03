@@ -14,11 +14,8 @@ require (
 	github.com/insomniacslk/dhcp v0.0.0-20220119180841-3c283ff8b7dd
 	github.com/jpillora/backoff v1.0.0
 	github.com/krolaw/dhcp4 v0.0.0-20190909130307-a50d88189771
-	github.com/libdns/cloudflare v0.1.0
-	github.com/libdns/libdns v0.2.1
 	github.com/mdlayher/ndp v0.0.0-20210831201139-f982b8766fb5
 	github.com/mdlayher/raw v0.0.0-20211126142749-4eae47f3d54b
-	github.com/miekg/dns v1.1.45
 	github.com/prometheus/client_golang v1.12.1
 	github.com/rtr7/dhcp4 v0.0.0-20181120124042-778e8c2e24a5
 	github.com/vishvananda/netlink v1.1.0
@@ -26,7 +23,6 @@ require (
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27
-	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11
 	golang.zx2c4.com/wireguard/wgctrl v0.0.0-20211230205640-daad0b7ba671
 )
 
