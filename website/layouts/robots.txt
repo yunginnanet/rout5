@@ -1,2 +1,0 @@
-User-Agent: *
-sitemap: https://router7.org/sitemap.xml
