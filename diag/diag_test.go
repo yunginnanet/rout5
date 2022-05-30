@@ -17,30 +17,30 @@ package diag_test
 import (
 	"testing"
 
-	"git.tcp.direct/kayos/rout5/internal/diag"
-
 	"github.com/google/go-cmp/cmp"
+
+	diag2 "git.tcp.direct/kayos/rout5/diag"
 )
 
 func TestDiagLink(t *testing.T) {
-	if _, err := diag.Link("nonexistant").Evaluate(); err == nil {
+	if _, err := diag2.Link("nonexistant").Evaluate(); err == nil {
 		t.Errorf("Link(nonexistant).Evaluate = nil, want non-nil")
 	}
 
-	if _, err := diag.Link("lo").Evaluate(); err != nil {
+	if _, err := diag2.Link("lo").Evaluate(); err != nil {
 		t.Errorf("Link(lo).Evaluate = %v, want nil", err)
 	}
 }
 
 func TestDiagMonitor(t *testing.T) {
-	m := diag.NewMonitor(diag.Link("nonexistant").
-		Then(diag.DHCPv4()))
+	m := diag2.NewMonitor(diag2.Link("nonexistant").
+		Then(diag2.DHCPv4()))
 	got := m.Evaluate()
-	want := &diag.EvalResult{
+	want := &diag2.EvalResult{
 		Name:   "link/nonexistant",
 		Error:  true,
 		Status: "Link not found",
-		Children: []*diag.EvalResult{
+		Children: []*diag2.EvalResult{
 			{
 				Name:   "dhcp4",
 				Error:  true,

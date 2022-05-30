@@ -23,19 +23,15 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"sync"
 	"time"
-	"unicode"
 
-	"github.com/gokrazy/gokrazy"
 	"github.com/google/renameio"
 	"github.com/krolaw/dhcp4"
 	"github.com/krolaw/dhcp4/conn"
@@ -43,11 +39,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"git.tcp.direct/kayos/rout5/internal/dhcp4d"
-	"git.tcp.direct/kayos/rout5/internal/oui"
+	"git.tcp.direct/kayos/rout5/dhcp/dhcp4d"
 	"git.tcp.direct/kayos/rout5/ipc"
 	"git.tcp.direct/kayos/rout5/multilisten"
 	"git.tcp.direct/kayos/rout5/networking"
+	"git.tcp.direct/kayos/rout5/util/oui"
 )
 
 var iface = flag.String("interface", "lan0", "ethernet interface to listen for DHCPv4 requests on")
@@ -189,30 +185,10 @@ form {
 `))
 )
 
-func loadLeases(h *dhcp4d.Handler, fn string) error {
-	b, err := ioutil.ReadFile(fn)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil
-		}
-		return err
-	}
-
-	leasesMu.Lock()
-	defer leasesMu.Unlock()
-	if err := json.Unmarshal(b, &leases); err != nil {
-		return err
-	}
-	h.SetLeases(leases)
-	updateNonExpired(leases)
-
-	return nil
-}
-
 var httpListeners = multilisten.NewPool()
 
 func updateListeners() error {
-	hosts, err := gokrazy.PrivateInterfaceAddrs()
+	hosts, err := networking.PrivateInterfaceAddrs()
 	if err != nil {
 		return err
 	}
@@ -232,8 +208,6 @@ type srv struct {
 }
 
 func newSrv(permDir string) (*srv, error) {
-	mayqtt := MQTT()
-
 	http.Handle("/metrics", promhttp.Handler())
 	if err := updateListeners(); err != nil {
 		return nil, err
@@ -260,31 +234,8 @@ func newSrv(permDir string) (*srv, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := loadLeases(handler, filepath.Join(permDir, "dhcp4d/leases.json")); err != nil {
-		return nil, err
-	}
 
-	http.HandleFunc("/sethostname", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			http.Error(w, "want POST", http.StatusMethodNotAllowed)
-			return
-		}
-		hwaddr := r.FormValue("hardwareaddr")
-		if hwaddr == "" {
-			http.Error(w, "missing hardwareaddr parameter", http.StatusBadRequest)
-			return
-		}
-		hostname := r.FormValue("hostname")
-		if hostname == "" {
-			http.Error(w, "missing hostname parameter", http.StatusBadRequest)
-			return
-		}
-		if err := handler.SetHostname(hwaddr, hostname); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		http.Redirect(w, r, "/", http.StatusFound)
-	})
+	http.HandleFunc("/sethostname", handleSetHostname)
 
 	http.HandleFunc("/lease/", func(w http.ResponseWriter, r *http.Request) {
 		hostname := strings.TrimPrefix(r.URL.Path, "/lease/")
@@ -317,66 +268,7 @@ func newSrv(permDir string) (*srv, error) {
 		}
 	})
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		host, _, err := net.SplitHostPort(r.RemoteAddr)
-		if err != nil {
-			http.Error(w, "bad request", http.StatusBadRequest)
-			return
-		}
-		ip := net.ParseIP(host)
-		if xff := r.Header.Get("X-Forwarded-For"); ip.IsLoopback() && xff != "" {
-			ip = net.ParseIP(xff)
-		}
-		if !networking.IsInPrivateNet(ip) {
-			http.Error(w, fmt.Sprintf("access from %v forbidden", ip), http.StatusForbidden)
-			return
-		}
-
-		type tmplLease struct {
-			dhcp4d.Lease
-
-			Vendor  string
-			Expired bool
-			Static  bool
-		}
-
-		leasesMu.Lock()
-		defer leasesMu.Unlock()
-		static := make([]tmplLease, 0, len(leases))
-		dynamic := make([]tmplLease, 0, len(leases))
-		tl := func(l *dhcp4d.Lease) tmplLease {
-			return tmplLease{
-				Lease:   *l,
-				Vendor:  ouiDB.Lookup(l.HardwareAddr[:8]),
-				Expired: l.Expired(time.Now()),
-				Static:  l.Expiry.IsZero(),
-			}
-		}
-		for _, l := range leases {
-			if l.Expiry.IsZero() {
-				static = append(static, tl(l))
-			} else {
-				dynamic = append(dynamic, tl(l))
-			}
-		}
-		sort.Slice(static, func(i, j int) bool {
-			return static[i].Num < static[j].Num
-		})
-		sort.Slice(dynamic, func(i, j int) bool {
-			return !dynamic[i].Expiry.Before(dynamic[j].Expiry)
-		})
-
-		if err := leasesTmpl.Execute(w, struct {
-			StaticLeases  []tmplLease
-			DynamicLeases []tmplLease
-		}{
-			StaticLeases:  static,
-			DynamicLeases: dynamic,
-		}); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	})
+	http.HandleFunc("/", handleHome)
 
 	handler.Leases = func(newLeases []*dhcp4d.Lease, latest *dhcp4d.Lease) {
 		leasesMu.Lock()
@@ -396,50 +288,7 @@ func newSrv(permDir string) (*srv, error) {
 			errs <- err
 		}
 		updateNonExpired(leases)
-		if err := ipc.Process("/user/dnsd", ipc.SigUSR1); err != nil {
-			log.Printf("notifying dnsd: %v", err)
-		}
 
-		// Publish the DHCP lease as JSON to MQTT, if configured:
-		leaseVal := struct {
-			Addr         string    `json:"addr"`
-			HardwareAddr string    `json:"hardware_addr"`
-			Expiration   time.Time `json:"expiration"`
-		}{
-			Addr:         latest.Addr.String(),
-			HardwareAddr: latest.HardwareAddr,
-			Expiration:   latest.Expiry.In(time.UTC),
-		}
-		leaseJSON, err := json.Marshal(leaseVal)
-		if err != nil {
-			log.Fatal(err)
-		}
-		// MQTT requires valid UTF-8 and some brokers don’t cope well with
-		// invalid UTF-8: https://github.com/fhmq/hmq/issues/104
-		identifier := strings.ToValidUTF8(latest.Hostname, "")
-		// Some MQTT clients (e.g. mosquitto_pub) don’t cope well with topic
-		// names containing non-printable characters (see also
-		// https://twitter.com/zekjur/status/1347295676909158400):
-		identifier = strings.Map(func(r rune) rune {
-			if unicode.IsPrint(r) {
-				return r
-			}
-			return -1
-		}, identifier)
-		if identifier == "" {
-			identifier = latest.HardwareAddr
-		}
-		select {
-		case mayqtt <- PublishRequest{
-			Topic:    "rout5/dhcp4d/lease/" + identifier,
-			Retained: true,
-			Payload:  leaseJSON,
-		}:
-		default:
-			// Channel not ready? skip publishing this lease (best-effort).
-			// This is an easy way of breaking circular dependencies between
-			// MQTT broker and DHCP server, and avoiding deadlocks.
-		}
 	}
 	c, err := conn.NewUDP4BoundListener(*iface, ":67")
 	if err != nil {

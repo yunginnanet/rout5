@@ -9,7 +9,7 @@ import (
 
 func setDefaults() {
 	var (
-		configSections = []string{"logger", "http", "interfaces"}
+		configSections = []string{"logger", "http", "interfaces", "data"}
 		deflogdir      = "/var/logging/" + Title
 	)
 
@@ -39,6 +39,10 @@ func setDefaults() {
 		"lan_ifnames": []string{"eth1"},
 	}
 
+	Opt["data"] = map[string]interface{}{
+		"directory": "/rout5",
+	}
+
 	for _, def := range configSections {
 		Snek.SetDefault(def, Opt[def])
 	}
@@ -51,9 +55,7 @@ func setDefaults() {
 		println("config generated -> ./config.toml")
 		os.Exit(0)
 	}
-
 }
-
 func processOpts() {
 	// string slice options and their exported variables
 	stringOpt := map[string]*[]string{
@@ -61,6 +63,10 @@ func processOpts() {
 		"interfaces.lan_ifnames": &PreferredLAN,
 		"admin.web_bind":         &AdminHTTP,
 		"admin.ssh_bind":         &AdminSSH,
+	}
+
+	strOpt := map[string]*string{
+		"data.directory": &DataDirectory,
 	}
 
 	// bool options and their exported variables
@@ -75,6 +81,10 @@ func processOpts() {
 
 	for key, opt := range intOpt {
 		*opt = Snek.GetInt(key)
+	}
+
+	for key, opt := range strOpt {
+		*opt = Snek.GetString(key)
 	}
 
 	for key, opt := range stringOpt {

@@ -31,7 +31,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"git.tcp.direct/kayos/rout5/internal/dhcp4d"
+	"git.tcp.direct/kayos/rout5/dhcp/dhcp4d"
 )
 
 const interfacesJson = `

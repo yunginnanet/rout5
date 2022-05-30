@@ -28,12 +28,12 @@ import (
 	"syscall"
 	"time"
 
-	"git.tcp.direct/kayos/rout5/internal/netconfig"
-
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/krolaw/dhcp4"
 	"github.com/mdlayher/raw"
+
+	"git.tcp.direct/kayos/rout5/netconfig"
 )
 
 type Lease struct {

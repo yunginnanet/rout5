@@ -26,7 +26,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/google/gopacket"
@@ -35,10 +34,12 @@ import (
 	"github.com/jpillora/backoff"
 	"github.com/rs/zerolog"
 
-	"git.tcp.direct/kayos/rout5/internal/dhcp4"
-	"git.tcp.direct/kayos/rout5/internal/netconfig"
+	"git.tcp.direct/kayos/rout5/config"
+	"git.tcp.direct/kayos/rout5/db"
+	"git.tcp.direct/kayos/rout5/dhcp/dhcp4"
 	"git.tcp.direct/kayos/rout5/ipc"
 	"git.tcp.direct/kayos/rout5/logging"
+	"git.tcp.direct/kayos/rout5/netconfig"
 )
 
 var log *zerolog.Logger
@@ -87,8 +88,10 @@ func healthy() error {
 }
 
 func logic() error {
+	// TODO: support multiple interfaces
+	var netInterface = config.DHCPInterfaces[0]
 
-	iface, err := net.InterfaceByName()
+	iface, err := net.InterfaceByName(netInterface)
 	if err != nil {
 		return err
 	}
@@ -97,7 +100,7 @@ func logic() error {
 	// still use the old hardware address. We overwrite it with the address that
 	// netconfigd is going to use to fix this issue without additional
 	// synchronization.
-	details, err := netconfig.Interface("/perm", *netInterface)
+	details, err := netconfig.Interface("/perm", netInterface)
 	if err == nil {
 		if spoof := details.SpoofHardwareAddr; spoof != "" {
 			if addr, err := net.ParseMAC(spoof); err == nil {
@@ -105,11 +108,10 @@ func logic() error {
 			}
 		}
 	}
-	ackFn := filepath.Join(*stateDir, "wire/ack")
 	var ack *layers.DHCPv4
-	ackB, err := ioutil.ReadFile(ackFn)
-	if err != nil && !os.IsNotExist(err) {
-		log.Printf("Loading previous DHCPACK packet from %s: %v", ackFn, err)
+	ackB, dErr := db.DHCPMessages()
+	if dErr != nil {
+		log.Warn().Msgf("Loading previous DHCPACK packet from database: %v", dErr)
 	} else {
 		pkt := gopacket.NewPacket(ackB, layers.LayerTypeDHCPv4, gopacket.DecodeOptions{})
 		if dhcp, ok := pkt.Layer(layers.LayerTypeDHCPv4).(*layers.DHCPv4); ok {

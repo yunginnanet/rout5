@@ -22,9 +22,9 @@ import (
 	"os/exec"
 	"testing"
 
-	"git.tcp.direct/kayos/rout5/internal/radvd"
-
 	"github.com/google/go-cmp/cmp"
+
+	"git.tcp.direct/kayos/rout5/radvd"
 )
 
 func TestRouterAdvertisement(t *testing.T) {

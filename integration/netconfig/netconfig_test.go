@@ -28,11 +28,11 @@ import (
 
 	"github.com/vishvananda/netlink"
 
-	"git.tcp.direct/kayos/rout5/internal/netconfig"
-
 	"github.com/andreyvit/diff"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/nftables"
+
+	"git.tcp.direct/kayos/rout5/netconfig"
 )
 
 const goldenInterfaces = `

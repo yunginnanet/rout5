@@ -23,7 +23,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"git.tcp.direct/kayos/rout5/internal/dhcp6"
+	"git.tcp.direct/kayos/rout5/dhcp/dhcp6"
 )
 
 type Listener interface {

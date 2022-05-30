@@ -29,16 +29,14 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/gokrazy/gokrazy"
-
-	"git.tcp.direct/kayos/rout5/internal/diag"
+	diag2 "git.tcp.direct/kayos/rout5/diag"
 	"git.tcp.direct/kayos/rout5/multilisten"
 )
 
 var httpListeners = multilisten.NewPool()
 
 func updateListeners() error {
-	hosts, err := gokrazy.PrivateInterfaceAddrs()
+	hosts, err := networking.PrivateInterfaceAddrs()
 	if err != nil {
 		return err
 	}
@@ -49,7 +47,7 @@ func updateListeners() error {
 	return nil
 }
 
-func dump(indent int, w io.Writer, re *diag.EvalResult) {
+func dump(indent int, w io.Writer, re *diag2.EvalResult) {
 	symbol := "✔"
 	if re.Error {
 		symbol = "✘"
@@ -65,7 +63,7 @@ func dump(indent int, w io.Writer, re *diag.EvalResult) {
 	fmt.Fprintf(w, "</ul></li>")
 }
 
-func firstError(re *diag.EvalResult) string {
+func firstError(re *diag2.EvalResult) string {
 	if re.Error {
 		return fmt.Sprintf("%s: %s", re.Name, re.Status)
 	}
@@ -88,18 +86,18 @@ func logic() error {
 	)
 	flag.Parse()
 	uplink := *ifname
-	m := diag.NewMonitor(diag.Link(uplink).
-		Then(diag.DHCPv4().
-			Then(diag.Ping4Gateway().
-				Then(diag.Ping4("google.ch").
-					Then(diag.TCP4("www.google.ch:80"))))).
-		Then(diag.DHCPv6().
-			Then(diag.Ping6("lan0", "google.ch"))).
-		Then(diag.RouterAdvertisments(uplink).
-			Then(diag.Ping6Gateway().
-				Then(diag.Ping6(uplink, "google.ch").
-					Then(diag.TCP6("www.google.ch:80"))))).
-		Then(diag.Ping6("", ip6allrouters+"%"+uplink)))
+	m := diag2.NewMonitor(diag2.Link(uplink).
+		Then(diag2.DHCPv4().
+			Then(diag2.Ping4Gateway().
+				Then(diag2.Ping4("google.ch").
+					Then(diag2.TCP4("www.google.ch:80"))))).
+		Then(diag2.DHCPv6().
+			Then(diag2.Ping6("lan0", "google.ch"))).
+		Then(diag2.RouterAdvertisments(uplink).
+			Then(diag2.Ping6Gateway().
+				Then(diag2.Ping6(uplink, "google.ch").
+					Then(diag2.TCP6("www.google.ch:80"))))).
+		Then(diag2.Ping6("", ip6allrouters+"%"+uplink)))
 	var mu sync.Mutex
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		mu.Lock()

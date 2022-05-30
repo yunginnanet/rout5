@@ -28,9 +28,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"git.tcp.direct/kayos/rout5/internal/netconfig"
 	"git.tcp.direct/kayos/rout5/ipc"
 	"git.tcp.direct/kayos/rout5/multilisten"
+	"git.tcp.direct/kayos/rout5/netconfig"
 	"git.tcp.direct/kayos/rout5/networking"
 )
 

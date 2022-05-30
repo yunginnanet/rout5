@@ -34,8 +34,8 @@ import (
 	"github.com/vishvananda/netlink"
 	"golang.org/x/sys/unix"
 
-	"git.tcp.direct/kayos/rout5/internal/dhcp4"
-	"git.tcp.direct/kayos/rout5/internal/dhcp6"
+	"git.tcp.direct/kayos/rout5/dhcp/dhcp4"
+	"git.tcp.direct/kayos/rout5/dhcp/dhcp6"
 	"git.tcp.direct/kayos/rout5/ipc"
 )
 

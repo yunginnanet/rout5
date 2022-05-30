@@ -22,9 +22,15 @@ var (
 	NoColor = true
 )
 
+// "data"
+var (
+	DataDirectory string
+)
+
 // "interfaces"
 var (
-	PreferredWAN, PreferredLAN []string
+	PreferredWAN []string
+	PreferredLAN []string
 	// Uplinks are connections to WAN(s).
 	Uplinks = make(map[string]net.Interface)
 	// Downlinks are connections to our LAN(s).

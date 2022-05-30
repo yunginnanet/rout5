@@ -30,7 +30,7 @@ import (
 
 	"git.tcp.direct/kayos/rout5/ipc"
 
-	"git.tcp.direct/kayos/rout5/internal/dhcp6"
+	"git.tcp.direct/kayos/rout5/dhcp/dhcp6"
 )
 
 func logic() error {

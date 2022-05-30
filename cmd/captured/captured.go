@@ -25,13 +25,13 @@ import (
 	_ "net/http/pprof"
 	"sync"
 
-	"github.com/gokrazy/gokrazy"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcapgo"
 
 	"git.tcp.direct/kayos/rout5/ipc"
 	"git.tcp.direct/kayos/rout5/multilisten"
+	"git.tcp.direct/kayos/rout5/networking"
 )
 
 var (
@@ -103,7 +103,7 @@ func (prb *packetRingBuffer) packetsLocked() []gopacket.Packet {
 var sshListeners = multilisten.NewPool()
 
 func updateListeners(srv *server) error {
-	hosts, err := gokrazy.PrivateInterfaceAddrs()
+	hosts, err := networking.PrivateInterfaceAddrs()
 	if err != nil {
 		return err
 	}

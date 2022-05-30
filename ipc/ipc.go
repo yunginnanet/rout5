@@ -6,6 +6,8 @@ import (
 
 type Signal uint8
 
+const addr = "rout5"
+
 const (
 	SigHUP Signal = iota
 	SigUSR1
@@ -16,10 +18,17 @@ func NotifyAll(s Signal) error {
 
 }
 
-func Notify(unused interface{}, s Signal) error {
+func Notify(incoming chan Signal, s Signal) error {
 
 }
 
 func Process(name string, sig Signal) error {
-	memconn.Listen()
+	c, err := memconn.Dial(addr, name)
+	if err != nil {
+		return err
+	}
+	if _, wErr := c.Write([]byte{byte(sig)}); wErr != nil {
+		return wErr
+	}
+	return nil
 }
